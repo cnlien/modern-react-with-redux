@@ -2,21 +2,30 @@ import React from 'react';
 import 'bootstrap/dist/css/bootstrap.css'
 import { Container, Spinner } from 'reactstrap';
 
+import SeasonDisplay from './Components/SeasonDisplay';
+import Clock from './Components/Clock';
+
 class App extends React.Component {
 
   // Constructor loads immediately on load. Not required but if it's used you must call super(props);
-  constructor(props){
-    super(props);
 
-    this.state = {
-      lat: null,
-      long: null,
-      errorMessage: "",
-    };
+  // constructor(props){
+  //   super(props);
 
+  //   this.state = {
+  //     lat: null,
+  //     long: null,
+  //     errorMessage: "",
+  //   };
+  // }
+
+  //NO REASON TO USE CONSTRUCTOR. THIS WILL COMPILE OUT WITH THE CONSTRUCTOR METHOD.
+  state = {lat: null, long: null, errorMessage:""};
+
+  componentDidMount() {
     window.navigator.geolocation.getCurrentPosition(
       (position) => {
-        console.table(position)
+        console.log(position)
         this.setState({
           lat: position.coords.latitude,
           long: position.coords.longitude
@@ -29,30 +38,43 @@ class App extends React.Component {
         })
       }
     );
+    console.log("Component Did Mount")
   }
 
-  render() {
+  componentDidUpdate() {
+    console.log("Component Updated");
+  }
+
+  //THIS IS CALLED A HELPER FUNCTION. IT'S USED TO AVOID MULTIPLE RETURNS INSIDE OF THE RENDER FUNCTION
+  renderContent() {
     if (this.state.errorMessage && !this.state.lat) {
       return(
-        <Container>
-          <h3>Error: {this.state.errorMessage}</h3>
-        </Container>
+        <h3>Error: {this.state.errorMessage}</h3>
       )
     } else if (!this.state.errorMessage && this.state.lat) {
       return (
-        <Container>
-          <h3>Latitude: {this.state.lat}</h3>
-          <h3>Longitude: {this.state.long}</h3>
-        </Container>
+        <SeasonDisplay
+          lat={this.state.lat}
+          long={this.state.long}
+        />
       )
     } else {
       return (
-        <Container>
+        <div>
           <h3>Latitude: <Spinner color="dark" /></h3>
           <h3>Longitude: <Spinner color="dark" /></h3>
-        </Container>
+        </div>
       );
     }
+  }
+
+  render() {
+    return (
+      <Container style={{marginTop:"100px"}}>
+        <Clock />
+        {this.renderContent()}
+      </Container>
+    )
   }
 }
 
