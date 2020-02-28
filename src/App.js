@@ -8,7 +8,7 @@ import { Container, Row } from 'reactstrap'
 
 //COMPONENTS
 import SearchBar from './Components/SearchBar';
-import ImageList from './Components/ImageList';
+import Image from './Components/Image';
 
 
 class App extends React.Component{
@@ -29,19 +29,37 @@ class App extends React.Component{
     return (
       <div className="App">
         <Container style={{marginTop:"20px", marginBottom:"20px"}}>
+          <Row>
           <SearchBar
             onSearchSubmit={this.onSearchSubmit}
           />
-          Found: {this.state.images.length} images
+          </Row>
+
+          <Row>
+            <p>Found: {this.state.images.length} images</p>
+          </Row>
+
+          <Row xs="2">
+            {this.state.images.map((image)=> (
+              <Image
+                key={image.id}
+                src={image.src}
+                alt={image.alt}
+              />
+            ))}
+
+            {/* {this.state.images.map((image)=> {
+              <Image
+                key={image.id}
+                src={image.regular}
+                alt={image.description}
+              />
+            })} */}
+            
+          </Row>
+
         </Container>
 
-        <Container>
-          <Row xs="2">
-            <ImageList
-              images={this.state.images}
-            />
-          </Row>
-        </Container>
 
         
       </div>
